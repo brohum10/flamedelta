@@ -28,6 +28,9 @@ function renderChart(rows) {
   chart.replaceChildren();
   const top = rows.filter((row) => row.deltaPp > 0).slice(0, 6);
   const shown = top.length ? top : rows.slice(0, 6);
+  chart.setAttribute('aria-label', shown.length
+    ? `Function share comparison. ${shown.map((row) => `${row.name}: baseline ${formatShare(row.baselineShare)}, candidate ${formatShare(row.candidateShare)}`).join('; ')}.`
+    : 'No functions to compare.');
   const maxShare = Math.max(0.01, ...shown.flatMap((row) => [row.baselineShare, row.candidateShare]));
   for (const row of shown) {
     const entry = element('div', 'chart-row');
