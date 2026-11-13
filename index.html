@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101722">
+  <meta name="description" content="Compare two Chrome or Node CPU profiles locally and find changes in sampled function time.">
+  <title>FlameDelta · Find the work that got hotter</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./src/style.css">
+  <script type="module" src="./src/app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <a class="brand" href="./" aria-label="FlameDelta home"><span class="brand-mark" aria-hidden="true">◈</span><span>flame<span class="brand-accent">delta</span></span></a>
+    <nav aria-label="Main navigation">
+      <a href="#lab">Compare</a>
+      <a href="#method">Method</a>
+      <a href="https://github.com/brohum10/flamedelta" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero wrap" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="pulse-dot"></span> PERFORMANCE DIAGNOSTICS / LOCAL BY DESIGN</div>
+        <h1 id="hero-title">Find the work<br>that got <em>hotter.</em></h1>
+        <p>Two CPU profiles. One clear answer: which functions took a larger share after a change? Compare a baseline and candidate, then inspect the evidence before blaming a line of code.</p>
+        <div class="hero-actions">
+          <a class="primary-button" href="#lab">Open the comparison <span aria-hidden="true">↗</span></a>
+          <span class="quiet-note">No account. No upload. Runs in your browser.</span>
+        </div>
+      </div>
+      <div class="hero-visual" aria-hidden="true">
+        <div class="visual-top"><span>PROFILE DIFF</span><span>● LIVE ANALYSIS</span></div>
+        <div class="visual-bars">
+          <div><span>renderCards</span><i style="--base:38%;--next:74%"></i></div>
+          <div><span>sortRows</span><i style="--base:66%;--next:50%"></i></div>
+          <div><span>parsePayload</span><i style="--base:58%;--next:41%"></i></div>
+          <div><span>formatPrice</span><i style="--base:48%;--next:32%"></i></div>
+        </div>
+        <div class="visual-bottom"><span>BASELINE <b class="base-swatch"></b></span><span>CANDIDATE <b class="next-swatch"></b></span><span>SHARE OF SAMPLED FUNCTION TIME</span></div>
+      </div>
+    </section>
+
+    <section class="lab wrap" id="lab" aria-labelledby="lab-title">
+      <div class="section-heading">
+        <div><div class="eyebrow">01 / THE COMPARISON</div><h2 id="lab-title">See what changed.</h2></div>
+        <p>Start with the built-in synthetic example or load two <code>.cpuprofile</code> files captured from comparable workloads.</p>
+      </div>
+      <div class="input-grid">
+        <div class="profile-card">
+          <div class="profile-card-top"><span class="profile-number">A / BEFORE</span><span class="file-badge">LOCAL FILE</span></div>
+          <h3>Baseline profile</h3>
+          <p id="baseline-name">Loading example…</p>
+          <label class="file-button" for="baseline-file">Choose baseline file <span aria-hidden="true">↗</span></label>
+          <input type="file" id="baseline-file" accept=".cpuprofile,.json,application/json">
+        </div>
+        <div class="profile-card">
+          <div class="profile-card-top"><span class="profile-number">B / AFTER</span><span class="file-badge">LOCAL FILE</span></div>
+          <h3>Candidate profile</h3>
+          <p id="candidate-name">Loading example…</p>
+          <label class="file-button" for="candidate-file">Choose candidate file <span aria-hidden="true">↗</span></label>
+          <input type="file" id="candidate-file" accept=".cpuprofile,.json,application/json">
+        </div>
+      </div>
+      <div class="input-footer"><p id="status" role="status" aria-live="polite">Loading synthetic demo profiles…</p><button class="text-button" id="reset" type="button">Restore demo data ↺</button></div>
+
+      <div class="result-shell" id="results" hidden>
+        <div class="result-heading"><div><div class="eyebrow">02 / THE SIGNAL</div><h3>Where the CPU samples moved</h3></div><span class="demo-tag" id="data-tag">SYNTHETIC EXAMPLE</span></div>
+        <div class="stats-grid">
+          <div class="stat-card accent-stat"><span class="stat-label">Largest increase</span><strong id="top-function">—</strong><span id="top-delta">—</span></div>
+          <div class="stat-card"><span class="stat-label">Baseline function samples</span><strong id="baseline-time">—</strong><span id="baseline-count">—</span></div>
+          <div class="stat-card"><span class="stat-label">Candidate function samples</span><strong id="candidate-time">—</strong><span id="candidate-count">—</span></div>
+          <div class="stat-card"><span class="stat-label">Internal / idle time</span><strong id="excluded-share">—</strong><span>Excluded from ranking denominator</span></div>
+        </div>
+        <p class="interpretation" id="interpretation"></p>
+        <div class="chart-head"><div><div class="eyebrow">03 / FUNCTION RANKING</div><h4>Self-time share by function</h4></div><span>Top increases · percentage of sampled function time</span></div>
+        <div class="chart-legend"><span><i class="key-base"></i> Baseline</span><span><i class="key-next"></i> Candidate</span></div>
+        <div class="bar-chart" id="bar-chart" role="img" aria-label="Baseline and candidate share for the top increased functions"></div>
+        <div class="table-head"><div><div class="eyebrow">04 / THE DETAILS</div><h4>Inspect every frame</h4></div><div class="table-tools"><label for="filter">Filter functions</label><input id="filter" type="search" placeholder="Name or source path"><button id="download" type="button">Export CSV ↗</button></div></div>
+        <div class="table-scroll"><table><caption>Function share comparison</caption><thead><tr><th scope="col">Function / source</th><th scope="col">Baseline</th><th scope="col">Candidate</th><th scope="col">Change</th></tr></thead><tbody id="rows"></tbody></table></div>
+        <p class="table-note" id="row-count"></p>
+      </div>
+    </section>
+
+    <section class="method wrap" id="method" aria-labelledby="method-title">
+      <div class="section-heading"><div><div class="eyebrow">05 / THE METHOD</div><h2 id="method-title">A useful clue, not a verdict.</h2></div><p>Sampling profiles are estimates. A change in share tells you where to investigate, then you repeat the workload to confirm it.</p></div>
+      <div class="method-grid">
+        <article><span>01</span><h3>Capture comparably</h3><p>Record the same user action or benchmark before and after a change. Different inputs, warmup, or recording lengths can alter the ranking.</p></article>
+        <article><span>02</span><h3>Match the source</h3><p>Frames match by function name, URL, line, and column. The tool sums sample intervals for each top frame and excludes profiler idle and internal markers.</p></article>
+        <article><span>03</span><h3>Read the trade-off</h3><p>Share is relative to sampled function time, not wall-clock CPU usage or a statistical confidence claim. Use the milliseconds and source locations as context.</p></article>
+      </div>
+      <div class="method-footer"><span>Supports Chrome DevTools and Node/V8 profiles with <code>nodes</code>, <code>samples</code>, and <code>timeDeltas</code>.</span><a href="https://chromedevtools.github.io/devtools-protocol/tot/Profiler/#type-Profile" target="_blank" rel="noreferrer">Profile format ↗</a></div>
+    </section>
+  </main>
+  <footer class="site-footer"><span>flame<span class="brand-accent">delta</span> / inspect the difference.</span><a href="https://github.com/brohum10/flamedelta" target="_blank" rel="noreferrer">Source, tests & limitations ↗</a></footer>
+  <noscript>This comparison needs JavaScript enabled in your browser.</noscript>
+</body>
+</html>

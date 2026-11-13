@@ -1,0 +1,49 @@
+{
+  "notice": "Constructed demonstration data, not a measured product regression.",
+  "baselineSamples": 200,
+  "candidateSamples": 200,
+  "baselineFunctionMs": 900,
+  "candidateFunctionMs": 880,
+  "rows": [
+    {
+      "name": "renderCards",
+      "baselineMs": 200,
+      "candidateMs": 340,
+      "baselineShare": 0.2222222222222222,
+      "candidateShare": 0.38636363636363635,
+      "deltaPp": 16.414
+    },
+    {
+      "name": "commitView",
+      "baselineMs": 200,
+      "candidateMs": 175,
+      "baselineShare": 0.2222222222222222,
+      "candidateShare": 0.19886363636363635,
+      "deltaPp": -2.336
+    },
+    {
+      "name": "sortRows",
+      "baselineMs": 175,
+      "candidateMs": 140,
+      "baselineShare": 0.19444444444444445,
+      "candidateShare": 0.1590909090909091,
+      "deltaPp": -3.535
+    },
+    {
+      "name": "parsePayload",
+      "baselineMs": 175,
+      "candidateMs": 125,
+      "baselineShare": 0.19444444444444445,
+      "candidateShare": 0.14204545454545456,
+      "deltaPp": -5.24
+    },
+    {
+      "name": "formatPrice",
+      "baselineMs": 150,
+      "candidateMs": 100,
+      "baselineShare": 0.16666666666666666,
+      "candidateShare": 0.11363636363636363,
+      "deltaPp": -5.303
+    }
+  ]
+}
